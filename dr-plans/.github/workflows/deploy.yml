@@ -1,0 +1,35 @@
+name: Deploy Terraform
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform-resilience
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform-resilience
+
+      - name: Terraform Plan
+        run: terraform plan -out=plan
+        working-directory: ./terraform-resilience
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve plan
+        working-directory: ./terraform-resilience
